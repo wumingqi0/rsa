@@ -9,7 +9,38 @@
 
 产生一个公钥和一个私钥：
 
-随意选择两个大的素数{\displaystyle p}p和{\displaystyle q}q，{\displaystyle p}p不等于{\displaystyle q}q，计算{\displaystyle N=pq}N=pq。
-根据欧拉函数，求得{\displaystyle r=\varphi (N)=\varphi (p)\times \varphi (q)=(p-1)(q-1)}{\displaystyle r=\varphi (N)=\varphi (p)\times \varphi (q)=(p-1)(q-1)}
-选择一个小于{\displaystyle r}r的整数{\displaystyle e}e，使{\displaystyle e}e与{\displaystyle r}r互质。并求得{\displaystyle e}e关于{\displaystyle r}r的模逆元，命名为{\displaystyle d}d（求{\displaystyle d}d令{\displaystyle ed\equiv 1{\pmod {r}}}{\displaystyle ed\equiv 1{\pmod {r}}}）。（模逆元存在，当且仅当{\displaystyle e}e与{\displaystyle r}r互质）
-将{\displaystyle p}p和{\displaystyle q}q的记录销毁。
+随意选择两个大的素数p和q，p不等于q，计算N=pq。
+根据欧拉函数，求得 φ(q)=(p-1)(q-1)
+选择一个小于r的整数e，使e与r互质。并求得e关于}r的模逆元，命名为d（求d）。（模逆元存在，当且仅当e与r互质）
+将p和q的记录销毁。
+将n和e封装成公钥，n和d封装成私钥
+
+加密消息:
+
+假设鲍勃要向爱丽丝发送加密信息m，他就要用爱丽丝的公钥 (n,e) 对m进行加密。这里需要注意，m必须是整数（字符串可以取ascii值或unicode值），且m必须小于n。
+
+所谓”加密”，就是算出下式的c：
+
+　me ≡ c (mod n)
+爱丽丝的公钥是 (3233, 17)，鲍勃的m假设是65，那么可以算出下面的等式：
+
+65^17 ≡ 2790 (mod 3233)
+于是，c等于2790，鲍勃就把2790发给了爱丽丝
+
+解密消息：
+爱丽丝拿到鲍勃发来的2790以后，就用自己的私钥(3233, 2753) 进行解密。可以证明，下面的等式一定成立：
+
+cd ≡ m (mod n)
+也就是说，c的d次方除以n的余数为m。现在，c等于2790，私钥是(3233, 2753)，那么，爱丽丝算出
+
+2790^2753 ≡ 65 (mod 3233)
+因此，爱丽丝知道了鲍勃加密前的原文就是65。
+
+至此，”加密–解密”的整个过程全部完成。
+
+
+其它利用：
+RSA也可以用来为一个消息署名。假如爱丽丝想给鲍伯传递一个署名的消息的话，那么她可以为她的消息计算一个散列值（Message digest），然后用她的私钥“加密”（如同前面“加密消息”的步骤）这个散列值并将这个“署名”加在消息的后面。这个消息只有用她的公钥才能被解密。鲍伯获得这个消息后可以用爱丽丝的公钥“解密”（如同前面“解密消息”的步骤）这个散列值，然后将这个数据与他自己为这个消息计算的散列值相比较。假如两者相符的话，那么鲍伯就可以知道发信人持有爱丽丝的私钥，以及这个消息在传播路径上没有被篡改过。
+
+
+但是由其可见RSA的算法复杂消耗巨大的计算资源于是锥圆曲线可以较为简单的计算出密文，这个下文再讲述
